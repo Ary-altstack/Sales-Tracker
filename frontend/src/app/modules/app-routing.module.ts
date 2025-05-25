@@ -1,32 +1,31 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { AuthGuard } from '../services/auth.guard';
-import { LoginComp } from '../components/login.component';
-import { SaleDetailsComponent } from '../components/sale-list.component';
 import { AddSaleComponent } from '../components/add-sale.component';
+import { SaleDetailsComponent } from '../components/sale-list.component';
+import { LoginComp } from '../components/login.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: '',
-    loadChildren: () => import('./auth.module').then((m) => m.AuthModule),
+    loadChildren: () =>
+      import('./auth.module').then((m) => m.AuthModule),
   },
   {
-    path: 'home',
+    path: 'dashboard',
     loadComponent: () =>
-      import('../components/dashboard.component').then((m) => m.DashboardComp),
+      import('../components/dashboard.component').then((m) => m.DashboardComponent),
     canActivate: [AuthGuard],
   },
-   {
+  {
     path: 'saledetails',
-    loadComponent: () =>
-     SaleDetailsComponent,
+    component: SaleDetailsComponent,
     canActivate: [AuthGuard],
   },
-   {
+  {
     path: 'addSales',
-    loadComponent: () =>
-     AddSaleComponent,
+    component: AddSaleComponent,
     canActivate: [AuthGuard],
   },
   {
@@ -34,6 +33,7 @@ export const routes: Routes = [
     component: LoginComp,
   },
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],

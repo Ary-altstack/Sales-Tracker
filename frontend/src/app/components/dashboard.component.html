@@ -1,0 +1,189 @@
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="logo">
+      <img src="assets/cars/logo.png" alt="Insights Logo" class="insights-logo">
+      Insights
+    </div>
+    <ul class="nav-list">
+      <li class="active">
+        <i class="fas fa-th-large"></i> Dashboard
+      </li>
+      <li (click)="navigateToSalesList()">
+        <i class="fas fa-chart-line"></i> Sales
+      </li>
+      <li (click)="showComingSoon('Calendar')"> <i class="fas fa-calendar-alt"></i> Calendar
+      </li>
+      <li (click)="showComingSoon('Core Models')"> <i class="fas fa-car"></i> Core models
+      </li>
+      <li (click)="showComingSoon('Markets')"> <i class="fas fa-globe"></i> Markets
+      </li>
+     
+      <li (click)="showComingSoon('Revenue')"> <i class="fas fa-dollar-sign"></i> Revenue
+      </li>
+      <li (click)="showComingSoon('Profit')"> <i class="fas fa-coins"></i> Profit
+      </li>
+    </ul>
+    <div *ngIf="showComingSoonMessage" class="message-overlay">
+      <div class="message-box">
+        <p>{{ comingSoonText }}</p>
+        <button (click)="closeComingSoonMessage()">OK</button>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <img src="assets/cars/bar1.webp" alt="chart" />
+      <p>YTD, Monthly & Daily sales tracking</p>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header">
+      <div class="tabs">
+        <button class="active">YTD</button>
+        <button>Monthly</button>
+        <button>Daily</button>
+      </div>
+      <div class="header-actions">
+        <input type="text" placeholder="Search..." />
+        <div class="avatar" (click)="navigateToLogin()">👤</div>
+      </div>
+    </header>
+
+    <section class="top-section">
+      <div class="sales-chart">
+        <div class="chart-header">
+          <h2>Global sales</h2>
+          <div class="chart-header-right">
+            <span class="chart-legend-item actual-p">Actual P</span>
+            <span class="chart-legend-item bp">BP</span>
+            <div class="year-select">
+              2025
+              <span class="dropdown-icon">▼</span>
+            </div>
+          </div>
+        </div>
+        <canvas baseChart [data]="barChartData" [options]="barChartOptions" chartType="bar"></canvas>
+      </div>
+
+      <div class="right-summary">
+        <div class="summary-box">
+          <div class="summary-header">
+            <span>Total Sales</span>
+            <span>Jan 2025 - Aug 2025</span>
+          </div>
+          <div class="summary-main">
+            <h2>195k</h2>
+            <p>BP 300k</p>
+          </div>
+          <div class="summary-growth">
+            <span>⬆</span>
+            <span>+23.30%</span>
+          </div>
+        </div>
+
+
+        <div class="add-sale-card" (click)="navigateToAddSale()">
+          <div class="card-content">
+            <h2>Add New Car Sale</h2>
+            <div class="plus-icon-wrapper">
+              <span>+</span>
+              </div>
+          </div>
+        </div>
+        <div class="core-models">
+          <div class="core-header">
+            <h4>Core models</h4>
+            <a href="#">View all</a>
+          </div>
+          <div class="core-grid">
+            <div class="core-card" *ngFor="let car of coreModels" [ngClass]>
+              <div class="core-image-wrapper">
+                <img [src]="car.image" alt="{{ car.name }}" />
+              </div>
+              <div class="core-details">
+                <div class="core-model-name">{{ car.name }}</div>
+                <div class="core-model-units">{{ car.units }}</div>
+                <div class="core-model-growth">⬆ {{ car.growth }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="new-customers-box">
+          <div class="new-customers-header">
+            <span>New Customers</span>
+            <span>YTD</span>
+          </div>
+          <div class="new-customers-main">
+            <h2>1.2k</h2>
+            <p>Target 1.5k</p>
+          </div>
+          <div class="new-customers-growth">
+            <span>⬆</span>
+            <span>+8.5%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="top-models">
+      <h3>Top selling models</h3>
+      <div class="top-models-content">
+        <div class="top-models-grid">
+          <div class="model-card" *ngFor="let car of topSellingModels" [ngClass]="car.colorClass">
+            <div class="model-image-wrapper">
+              <img [src]="car.image" alt="{{ car.name }}">
+            </div>
+            <div class="model-details">
+              <div class="model-name-detail">{{ car.name }}</div>
+              <div class="model-sales-detail">{{ car.sales }}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="region-channel-section">
+      <div class="region-list">
+        <h3>Sales volume - Regions</h3>
+        <div class="region-table">
+          <div class="region-row" *ngFor="let region of salesByRegion">
+            <div class="region-flag-name">
+              <img [src]="region.flag" alt="{{ region.name }} flag" />
+              <div>
+                <div><strong>{{ region.name }}</strong></div>
+                <div class="bp-label">BP {{ region.bp }}</div>
+              </div>
+            </div>
+            <div class="region-numbers-group">
+              <div class="region-volume">{{ region.volume }}</div>
+              <div class="region-change" [ngClass]="{
+                  'positive': region.change.includes('+'),
+                  'negative': region.change.includes('-')
+                }">{{ region.change }}</div>
+            </div>
+            <img [src]="region.trend" alt="trend" class="trend-line" />
+          </div>
+        </div>
+      </div>
+
+      <div class="channel-mix">
+        <h3>Global channel mix</h3>
+        <div class="doughnut-chart-container">
+          <canvas
+            baseChart
+            [data]="doughnutChartData"
+            [options]="doughnutChartOptions"
+            [type]="'doughnut'">
+          </canvas>
+        </div>
+        <ul class="channel-legend">
+          <li *ngFor="let channel of channelMix">
+            <span class="color-box" [style.background]="channel.color"></span>
+            <span class="channel-name">{{ channel.name }}</span>
+            <span class="channel-value">{{ channel.value }}</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</div>

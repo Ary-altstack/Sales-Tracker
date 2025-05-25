@@ -9,12 +9,14 @@ import { CommonModule } from '@angular/common';
   imports : [CommonModule],
   template: `
   <!-- Navbar at the top -->
-<!-- Navbar at the top -->
 <nav class="navbar">
-  <div class="navbar-brand">Sales Dashboard</div>
+     <a class="navbar-brand d-flex align-items-center" routerLink="/">
+      <img src="assets/logo/logo.jpg" alt="Logo" width="40" height="40" class="me-2 rounded" />
+      <span class="fw-bold fs-4">Sales Dashboard</span>
+    </a>
   <ul class="nav-links">
-    <li><a href="/home">Home</a></li>
-    <li><a href="/sales">Sales</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/addSales">Sales</a></li>
     <li><a href="/logout">Logout</a></li>
   </ul>
 </nav>
@@ -23,7 +25,7 @@ import { CommonModule } from '@angular/common';
 <div class="grid-wrapper">
   <div class="card-grid">
     <div class="horizontal-sale-card" *ngFor="let sale of sales">
-      <img class="card-img" [src]="'http://localhost:3000/' + sale.carImage" alt="Car Image" />
+      <img class="card-img" [src]="'http://localhost:3000/' + sale.carImage" alt="Car Image"/>
       <div class="card-title">{{ sale.customerName }}</div>
       <div class="card-sub">{{ sale.customerEmail }}</div>
       <div class="card-sub">Model: {{ sale.model }}</div>
@@ -31,41 +33,15 @@ import { CommonModule } from '@angular/common';
       <div class="card-sub">Type: {{ sale.type }}</div>
       <div class="card-sub">Date: {{ sale.saleDate }}</div>
       <div class="d-flex justify-content-between mt-2">
-        <a [href]="'/sales/' + sale.userId + '/edit'" class="btn btn-sm btn-warning">Edit</a>
-        <button class="btn btn-sm btn-danger" (click)="deleteSale(sale.userId)">Delete</button>
+        <button class="btn btn-sm btn-danger" (click)="deleteSale(sale._id)">Delete</button>
       </div>
     </div>
   </div>
 </div>
 
-
-
-
-
-        <!-- <h2>Sale Details</h2>
-
-        <table *ngIf="!loading && !error" border="1" cellpadding="8">
-        <thead>
-            <tr>
-            <th>#</th>
-            <th>Customer Name</th>
-            <th>Model</th>
-            <th>Amount</th>
-            <th>Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let sale of sales; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ sale.customerName }}</td>
-            <td>{{ sale.model }}</td>
-            <td>{{ sale.price }}</td>
-            <td>{{ sale.saleDate }}</td>
-            </tr>
-        </tbody>
-        </table> -->
   `,
-  styles : [`/* Navbar */
+  styles : [`
+  /* Navbar */
 .navbar {
   background: linear-gradient(to right, #1e3a8a, #3b82f6);
   color: white;
@@ -80,6 +56,7 @@ import { CommonModule } from '@angular/common';
 .navbar-brand {
   font-size: 1.5rem;
   font-weight: bold;
+  color: white;
 }
 
 .nav-links {
@@ -107,7 +84,7 @@ import { CommonModule } from '@angular/common';
   /* Full viewport height */
   display: block;
   min-height: 100vh;
-  background: url('https://www.dreamstime.com/stunning-d-visualization-modern-luxury-blue-car-black-mirrored-showroom-floor-generated-ai-image370299195') no-repeat center center fixed;
+  background: url('/assets/logo/bg.jpeg') no-repeat center center fixed;
   background-size: cover;
   position: relative;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -145,11 +122,12 @@ import { CommonModule } from '@angular/common';
   flex-wrap: wrap;
   gap: 1.5rem;
   justify-content: center;
+  height: 350px;
 }
 
 .horizontal-sale-card {
   flex: 1 1 calc(30% - 1rem);
-  background-color: #ffffff;
+  background-color:hsla(0, 0.00%, 100.00%, 0.75);
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
@@ -179,11 +157,11 @@ import { CommonModule } from '@angular/common';
 
 .card-img {
   width: 100%;
-  height: auto;
+  height: 150px;
   object-fit: cover;
   border-radius: 6px;
   margin-bottom: 0.5rem;
-  max-height: 100px;
+
 }
 
 /* Button styles */
@@ -248,12 +226,12 @@ export class SaleDetailsComponent implements OnInit {
       }
     });
   }
-deleteSale(userId: string): void {
+deleteSale(saleId: string): void {
   if (confirm('Are you sure you want to delete this sale?')) {
-    this.saleService.deleteSale(userId).subscribe({
+    this.saleService.deleteSale(saleId).subscribe({
       next: (response) => {
         console.log('Sale deleted', response);
-        this.fetchSales(); // Refresh list after delete
+        this.fetchSales(); // Refresh the sales list after deletion
       },
       error: (err) => {
         console.error('Error deleting sale', err);
@@ -261,4 +239,5 @@ deleteSale(userId: string): void {
     });
   }
 }
+
 }

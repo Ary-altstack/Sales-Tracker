@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <form
+              id="addSalesForm"
+              action="/addSales"
+              method="POST"
+              enctype="multipart/form-data"
+            >
+              <input
+                type="text"
+                name="customerName"
+                class="form-control my-2"
+                placeholder="Customer name"
+                required
+              />
+              <input
+                type="email"
+                name="customerEmail"
+                class="form-control my-2"
+                placeholder="Customer Email"
+                required
+              />
+              <input
+                type="text"
+                name="customerContact"
+                class="form-control my-2"
+                placeholder="Customer contact No"
+                required
+              />
+              <input
+                type="text"
+                name="model"
+                class="form-control my-2"
+                placeholder="Model name"
+                required
+              />
+              <input
+                type="number"
+                name="price"
+                class="form-control my-2"
+                placeholder="Price"
+                required
+              />
+              <input
+                type="date"
+                name="saleDate"
+                class="form-control my-2"
+                placeholder="Date"
+                required
+              />
+              <input
+                type="file"
+                name="carImage"
+                class="form-control my-2"
+                required
+              />
+              <input
+                type="text"
+                name="type"
+                class="form-control my-2"
+                placeholder="Car type"
+                required
+              />
+              <button type="submit" class="btn btn-success w-100 btn-submit">
+                Add Sale
+              </button>
+        </form>
+</body>
+</html>

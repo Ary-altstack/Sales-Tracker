@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import axios from 'axios';
 import { Observable } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -14,10 +13,9 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   register(data: any): Observable<any> {
-    return this.http.post('http://localhost:3000/signup', data, {
+    return this.http.post(`${this.apiURL}/register`, data, {
       withCredentials: true,
     });
-    
   }
 
   login(credentials: any): Observable<any> {
@@ -29,8 +27,9 @@ export class AuthService {
     getUserId(): string {
     return sessionStorage.getItem('userId') || '';
   }
-  // Add a sale
-  addSale(formData: FormData): Observable<any> {
+
+   // Add a sale
+   addSale(formData: FormData): Observable<any> {
     return this.http.post(`${this.apiURL}/addSales`, formData, { withCredentials: true });
   }
 
@@ -47,9 +46,8 @@ export class AuthService {
     return sessionStorage.getItem('token');
   }
 
-   // Get all sales
   getAllSales(): Observable<any> {
-    return this.http.get(`${this.apiURL}/saledetails`);
+    return this.http.get(`${this.apiURL}/saledetails`, { withCredentials: true });
   }
 
   // Get sale by ID (for edit)

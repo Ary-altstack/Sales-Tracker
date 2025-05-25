@@ -1,12 +1,31 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-add-sale',
-  standalone : false,
+  standalone: true, 
+  imports: [
+    CommonModule,
+    ReactiveFormsModule, 
+    RouterModule
+  ],
   template: `
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="navbar-brand">
+    <img src="assets/logo/logo.jpg" alt="Logo" width="40" height="40" class="me-2 rounded" />
+    <span class="fw-bold fs-4">Add Sales</span>
+  </div>
+  <div>
+      <button (click)="navigateToHome()">Dashboard</button>
+      <button (click)="navigateToSalesList()">Sales List</button>
+      <button (click)="logout()">Logout</button>
+  </div>
+    </nav>
+    
     <div class="card">
   <h3>Add New Car Sale</h3>
   <form [formGroup]="saleForm" (ngSubmit)="onSubmitSaleForm()" enctype="multipart/form-data">
@@ -40,31 +59,69 @@ import { Router } from '@angular/router';
 
   `,
   styles: [`
-    /* Container & background */
+  .navbar {
+  background: linear-gradient(to right, #3b82f6, #1e3a8a);
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  z-index: 1000; 
+}
+
+.navbar img {
+  margin-right: 1rem; 
+}
+
+.navbar button {
+  background-color: #3b82f6; 
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  
+}
+.navbar div {
+  display: flex; 
+  gap: 1rem;
+}
+.navbar button:hover {
+  background-color: #1e40af; 
+}
+    
 :host {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #EFF6FF; /* Sky Blue background */
+  background-color: #EFF6FF; 
   padding: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Card style */
+
 .card {
-  background-color: #FFFFFF; /* White card */
+  background-color: #FFFFFF; 
   border-radius: 0.5rem;
   padding: 2rem;
   width: 100%;
   max-width: 600px;
-  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15); /* subtle blue shadow */
-  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15); 
+  margin-top: 5rem; 
 }
 
 /* Header */
 h3 {
-  color: #1E40AF; /* Primary Blue */
+  color: #1E40AF; 
   font-weight: 700;
   text-align: center;
   margin-bottom: 1.5rem;
@@ -74,12 +131,12 @@ h3 {
 label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #1E3A8A; /* Dark Blue */
+  color: #1E3A8A; 
   font-weight: 600;
   font-size: 0.95rem;
 }
 
-/* Input fields */
+
 input[type="text"],
 input[type="email"],
 input[type="number"],
@@ -88,10 +145,10 @@ input[type="file"] {
   width: 100%;
   padding: 0.5rem 0.75rem;
   margin-bottom: 1rem;
-  border: 1.5px solid #3B82F6; /* Light Blue border */
+  border: 1.5px solid #3B82F6;
   border-radius: 0.375rem;
   font-size: 1rem;
-  color: #1E3A8A; /* Dark Blue text */
+  color: #1E3A8A; 
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   box-sizing: border-box;
 }
@@ -101,16 +158,16 @@ input[type="email"]:focus,
 input[type="number"]:focus,
 input[type="date"]:focus,
 input[type="file"]:focus {
-  border-color: #1E40AF; /* Primary Blue on focus */
+  border-color: #1E40AF; 
   outline: none;
   box-shadow: 0 0 6px #3B82F6;
 }
 
-/* Submit button */
+
 button[type="submit"] {
   width: 100%;
   padding: 0.75rem 1rem;
-  background-color: #1E40AF; /* Primary Blue */
+  background-color: #1E40AF; 
   color: white;
   border: none;
   font-size: 1.1rem;
@@ -121,24 +178,24 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover:not(:disabled) {
-  background-color: #3B82F6; /* Light Blue hover */
+  background-color: #3B82F6; 
 }
 
 button[type="submit"]:disabled {
-  background-color: #94a3b8; /* Gray-blue disabled */
+  background-color: #94a3b8; 
   cursor: not-allowed;
 }
 
-/* Error message styling (if you want to add) */
+
 .error-msg {
-  color: #DC2626; /* Red for errors */
+  color: #DC2626; 
   font-size: 0.875rem;
   margin-bottom: 1rem;
   font-weight: 600;
   text-align: center;
 }
 
-/* Responsive */
+
 @media (max-width: 640px) {
   :host {
     padding: 1rem;
@@ -219,5 +276,17 @@ export class AddSaleComponent {
         this.isSubmitting = false;
       },
     });
+    
+  }
+  navigateToHome() {
+    this.router.navigate(['/dashboard']);
+  }
+  navigateToSalesList() {
+    this.router.navigate(['/saledetails']);
+  }
+
+  logout() {
+    this.saleService.logout(); 
+    this.router.navigate(['/login']);
   }
 }

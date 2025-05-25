@@ -1,192 +1,3 @@
-/* const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const session = require("express-session");
-const errorHandler = require("./utils").errorHandler;
-const config = require("./config.json");
-
-
-const app = express();
-app.use(express.json());
-
-app.use(
-  cors({
-    origin: "http://localhost:4200",
-    credentials: true,
-  })
-);
-
-app.use(
-  session({
-    secret: "your-session-secret-key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false,
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60, // 1 hour
-    },
-  })
-);
-
-const url = `mongodb+srv://${config.username}:${config.userpassword}@${config.dbname}.${config.userstring}.mongodb.net/${config.dbname}?retryWrites=true&w=majority&appName=Valtech`;
-mongoose
-  .connect(url)
-  .then(() => console.log("DB Connected!!"))
-  .catch((error) => console.log("Error", error));
-
-const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
-
-const User = mongoose.model(
-  "User",
-  new Schema({
-    id: ObjectId,
-    firstName: { type: String, required: true },
-    lastName: String,
-    email: { type: String, unique: true, required: true },
-    phoneNo: String,
-    password: { type: String, required: true },
-  })
-);
- 
-const saleSchema = new mongoose.Schema({
-  salespersonid: String,
-  customername: String,
-  customeremail: String,
-  customerphone: String,
-  vehiclebrand: String,
-  vehiclemodel: String,
-  saledate: Date,
-  saleamount: Number,
-  vehicleimage: String,
-  vehicleyear: Number,
-});
-
-module.exports = mongoose.model('Sale', saleSchema);
-
-
-app.post("/register", async (req, res) => {
-  try {
-    const { firstName, lastName, email, phoneNo, password } = req.body;
-
-    if (!firstName || !email || !password) {
-      return res.status(400).json({ error: "Required fields missing" });
-    }
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ error: "Email already exists" });
-
-    const hashedPassword = bcrypt.hashSync(password, 10);
-
-    const user = new User({
-      firstName,
-      lastName,
-      email,
-      phoneNo,
-      password: hashedPassword,
-    });
-
-    const savedUser = await user.save();
-
-    res
-      .status(201)
-      .json({ message: "User registered successfully", user: savedUser });
-  } catch (error) {
-    console.error("Registration error:", error);
-    res.status(500).json({ error: "Registration failed" });
-  }
-});
-
-app.post("/login", async (req, res) => {
-  try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user)
-      return res.status(401).json({ error: "Invalid email or password" });
-
-    const isPasswordValid = bcrypt.compareSync(
-      req.body.password,
-      user.password
-    );
-    if (!isPasswordValid)
-      return res.status(401).json({ error: "Invalid email or password" });
-
-    req.session.user = {
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phoneNo: user.phoneNo,
-    };
-
-    res.status(200).json({
-      message: "Login successful",
-      user: req.session.user,
-    });
-  } catch (err) {
-    res.status(500).json({ error: "Something went wrong" });
-  }
-});
-
-app.get("/home", async (req, res) => {
-  if (!req.session.user || !req.session.user._id)
-    return res.status(401).json({ error: "Not authenticated" });
-
-  try {
-    const user = await User.findById(req.session.user._id).select("-password");
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch profile" });
-  }
-});
-
-app.post("/sales", async (req, res) => {
-  try {
-    const sale = new Sale(req.body); // 🔧 Create Sale
-    await sale.save();
-    res.status(201).json(sale);
-  } catch (err) {
-    console.error("Error creating sale:", err);
-    res.status(500).json({ error: "Failed to create sale" });
-  }
-});
-
-app.get("/sales/:userId", async (req, res) => {
-  try {
-    const sales = await Sale.find({ salespersonid: req.params.userId }); // 🔧 Fetch by User
-    res.status(200).json(sales);
-  } catch (err) {
-    console.error("Error fetching sales:", err);
-    res.status(500).json({ error: "Failed to fetch sales" });
-  }
-});
-
-app.get("/sales/:userId/:saleId", async (req, res) => {
-  const { userId, saleId } = req.params;
-  try {
-    const sale = await Sale.findOne({ _id: saleId, salespersonid: userId }); // 🔧 Detail route
-    if (!sale) return res.status(404).json({ error: "Sale not found" });
-    res.status(200).json(sale);
-  } catch (err) {
-    console.error("Error fetching sale:", err);
-    res.status(500).json({ error: "Failed to fetch sale" });
-  }
-});
-
-app.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) return res.status(500).send({ error: "Could not log out" });
-    res.send({ message: "Logout successful" });
-  });
-});
-
-app.listen(config.port, config.host, () => {
-  console.log(`Server running on ${config.host}:${config.port}`);
-});
- */
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -199,6 +10,61 @@ const multer = require("multer");
 const User = require("./models/User");
 const Sale = require("./models/Sale");
 
+
+const dashboardSummarySchema = new mongoose.Schema({
+  ytdValue: String,
+  bpValue: String,
+  growth: String,
+  dateRange: String,
+});
+const DashboardSummary = mongoose.model('DashboardSummary', dashboardSummarySchema);
+
+const newCustomersSchema = new mongoose.Schema({
+  customerCount: String,
+  target: String,
+  growth: String,
+});
+const NewCustomers = mongoose.model('NewCustomers', newCustomersSchema);
+
+const globalSalesChartSchema = new mongoose.Schema({
+  labels: [String],
+  salesData: [Number],
+});
+const GlobalSalesChart = mongoose.model('GlobalSalesChart', globalSalesChartSchema);
+
+const coreModelSchema = new mongoose.Schema({
+  name: String,
+  image: String,
+  units: String,
+  growth: String,
+  colorClass: String,
+});
+const CoreModel = mongoose.model('CoreModel', coreModelSchema);
+
+const topSellingModelSchema = new mongoose.Schema({
+  name: String,
+  image: String,
+  sales: String,
+  colorClass: String,
+});
+const TopSellingModel = mongoose.model('TopSellingModel', topSellingModelSchema);
+
+const salesByRegionSchema = new mongoose.Schema({
+  name: String,
+  flag: String,
+  volume: String,
+  bp: String,
+  change: String,
+  trend: String,
+});
+const SalesByRegion = mongoose.model('SalesByRegion', salesByRegionSchema);
+
+const channelMixSchema = new mongoose.Schema({
+  name: String,
+  value: String,
+  color: String,
+});
+const ChannelMix = mongoose.model('ChannelMix', channelMixSchema);
 
 const app = express();
 app.use(cors({
@@ -238,18 +104,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-// app.use(
-//   session({
-//     secret: "ydckyghvgjhvgudutrswyer5td74e56dfuvjl",
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//       secure: false,
-//       httpOnly: true,
-//       maxAge: 1000 * 60 * 60, // 1 hour
-//     },
-//   })
-// );
 
 // Database connection
 // let url = `mongodb+srv://${config.username}:${config.userpassword}@${config.dbname}.${config.userstring}.mongodb.net/${config.dbname}?retryWrites=true&w=majority&appName=Valtech`;
@@ -371,11 +225,17 @@ app.post("/addSales",upload.single("carImage"), async(req,res) => {
     }
 })
 
-app.get("/saledetails",async(req,res) => {
-    let result = await Sale.find()
-    // res.render("list",{details:result})
-     res.json({ message: 'Welcome to home page' ,result});
-})
+app.get("/saledetails", async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    const result = await Sale.find({ userId });  // Fetch all sales for this user
+    res.json({ message: 'Sales fetched successfully', result });
+  } catch (err) {
+    console.error('Error fetching sales:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 
 app.get('/sales/:id/edit', async (req, res) => {
@@ -390,6 +250,23 @@ app.get('/sales/:id/edit', async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+app.delete('/sales/:id', async (req, res) => {
+  console.log("DELETE request for ID:", req.params.id);
+  try {
+    const deletedSale = await Sale.findByIdAndDelete(req.params.id);
+    if (!deletedSale) {
+      return res.status(404).json({ message: 'Sale not found' });
+    }
+    console.log("inside delete index.js");
+    
+    res.status(200).json({ message: 'Sale deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+}); 
+
+
 app.post('/sales/:id', upload.single('carImage'), async (req, res) => {
   try {
     const saleId = req.params.id;
@@ -407,25 +284,17 @@ app.post('/sales/:id', upload.single('carImage'), async (req, res) => {
     const updatedSale = await Sale.findByIdAndUpdate(saleId, updateData, { new: true });
 
     if (!updatedSale) {
-      return res.status(404).send("Sale not found");
+      return res.status(404).json({ message: 'Sale not found' });
     }
 
     res.redirect('/saledetails'); // redirect to sales listing or details page
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+    res.status(500).json({message : "Server error"});
   }
 });
 
-app.delete("/sales/:id/delete", async (req, res) => {
-  try {
-    await Sale.findByIdAndDelete(req.params.id);
-    res.redirect("/saledetails"); // Redirect after deletion
-  } catch (err) {
-    console.error("Failed to delete sale:", err);
-    res.status(500).send("Internal Server Error");
-  }
-});
+
 
 // Server Listening
 const PORT =  3000;
@@ -433,3 +302,87 @@ app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
  
+
+
+
+app.get('/api/dashboard-summary', async (req, res) => {
+  try {
+    const summary = await DashboardSummary.findOne(); 
+    if (summary) {
+      res.json(summary);
+    } else {
+      res.status(404).json({ message: 'Dashboard summary not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/new-customers', async (req, res) => {
+  try {
+    const newCust = await NewCustomers.findOne(); 
+    if (newCust) {
+      res.json(newCust);
+    } else {
+      res.status(404).json({ message: 'New customers data not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/global-sales-chart', async (req, res) => {
+  try {
+    const chartData = await GlobalSalesChart.findOne(); 
+    if (chartData) {
+      res.json(chartData);
+    } else {
+      res.status(404).json({ message: 'Global sales chart data not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/core-models', async (req, res) => {
+  try {
+    const models = await CoreModel.find();
+    res.json(models);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/top-selling-models', async (req, res) => {
+  try {
+    const models = await TopSellingModel.find();
+    res.json(models);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/sales-by-region', async (req, res) => {
+  try {
+    const sales = await SalesByRegion.find();
+    res.json(sales);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/channel-mix', async (req, res) => {
+  try {
+    const mix = await ChannelMix.find();
+    res.json(mix);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
+app.listen(PORT, () => {
+  console.log(`Node.js backend listening at http://localhost:${PORT}`);
+});
+

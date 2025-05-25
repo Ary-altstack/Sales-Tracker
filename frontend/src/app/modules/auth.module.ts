@@ -1,26 +1,30 @@
 import { NgModule } from '@angular/core';
-import { LoginComp } from '../components/login.component';
-import { RegisterComp } from '../components/register.component';
-import { AddSaleComponent } from '../components/add-sale.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
+import { LoginComp } from '../components/login.component';
+import { RegisterComp } from '../components/register.component';
+
 @NgModule({
-  declarations: [LoginComp, RegisterComp,AddSaleComponent],
+  declarations: [
+    LoginComp,       
+    RegisterComp     
+  ],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule, 
     FormsModule,
     HttpClientModule,
     RouterModule.forChild([
       { path: 'login', component: LoginComp },
-      { path: 'register', component: RegisterComp },
-      { path: 'addSales', component: AddSaleComponent }
-    ]),
+      { path: 'register', component: RegisterComp }
+    ])
   ],
-  exports: [LoginComp, RegisterComp, AddSaleComponent],
+  exports: [
+    LoginComp,       
+    RegisterComp     
+  ]
 })
 export class AuthModule {}

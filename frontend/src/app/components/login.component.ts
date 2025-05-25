@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
   <div class="container-fluid">
     <a class="navbar-brand d-flex align-items-center" routerLink="/">
-      <img src="assets/logo.png" alt="Logo" width="40" height="40" class="me-2 rounded" />
+      <img src="/assets/logo/logo.jpg" alt="Logo" width="40" height="40" class="me-2 rounded" />
       <span class="fw-bold fs-4">Sales Tracker</span>
     </a>
     <button
@@ -27,15 +27,15 @@ import { Router } from '@angular/router';
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link" routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/register" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Register</a>
-        </li>
-        <li class="nav-item">
+        </li> -->
+        <!-- <li class="nav-item">
           <a class="nav-link" routerLink="/add-form" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Add Car</a>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>
@@ -300,9 +300,11 @@ export class LoginComp implements OnInit {
     });
 
     this.registerForm = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      firstName: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      lastName: new FormControl('', [Validators.required, Validators.minLength(3)]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(10)]),
+      contactNo: new FormControl('', [Validators.required, Validators.minLength(10)]),
     });
   }
 
@@ -340,7 +342,7 @@ export class LoginComp implements OnInit {
         next: (res: any) => {
           sessionStorage.setItem('token', res.token);
           this.isSubmitting = false;
-          this.router.navigate(['/addSales']);
+          this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           this.error = err.error?.message || 'Login failed. Please check your credentials.';
